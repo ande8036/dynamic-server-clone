@@ -3,17 +3,17 @@
     "version": "0.0.0",
     "description": "Dynamic Web Server using Node JS",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Logan Shafer",
+        "email": "shaf3780@stthomas.edu"
     },
     "contributors": [
         {
-            "name": "",
-            "email": ""
+            "name": "Erik Andersen",
+            "email": "ande8036@stthomas.edu"
         },
         {
-            "name": "",
-            "email": ""
+            "name": "Nolan Jones",
+            "email": "jone1905@stthomas.edu"
         }
     ],
     "main": "server.js",
