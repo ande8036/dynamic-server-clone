@@ -39,7 +39,23 @@ app.get('/year/:selected_year', (req, res) => {
     fs.readFile(path.join(template_dir, 'year.html'), (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
-
+        if(err)
+        {
+            res.status(404).send('Error: file not found');
+        }
+        else
+        {
+            let response = data.replace('{{{year here}}}', req.params.selected_year);
+            db.all('SELECT year FROM usenergy ', [req.params.selected_year[0]], (err, rows) => {
+                let i;
+                let list_items = ''
+                for (i = 0; i < rows.length; i++) {
+                    list_items += '<li>' + rows[i].selected_year + '</li>\n';
+                }
+                response = response.replace('{{{year here}}}', list_items);
+                res.status(200).type('html').send(response);
+            });
+        }
         res.status(200).type('html').send(template); // <-- you may need to change this
     });
 });
