@@ -47,12 +47,8 @@ app.get('/year/:selected_year', (req, res) => {
         {
             let response = data.replace('{{{year here}}}', req.params.selected_year);
             db.all('SELECT year FROM usenergy ', [req.params.selected_year[0]], (err, rows) => {
-                let i;
-                let list_items = ''
-                for (i = 0; i < rows.length; i++) {
-                    list_items += '<li>' + rows[i].selected_year + '</li>\n';
-                }
-                response = response.replace('{{{year here}}}', list_items);
+                
+                response = response.replace('{{{year here}}}', req.params.selected_year);
                 res.status(200).type('html').send(response);
             });
         }
