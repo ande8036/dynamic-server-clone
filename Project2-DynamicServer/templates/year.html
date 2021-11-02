@@ -18,9 +18,25 @@
 </head>
 <body>
     <!-- create template here -->
-    <h1>{{{year here}}}</h1>
-    <ul>
-        {{{coal count here}}}
-    </ul>
+    <!-- make an HTML table here that we populate with data -->
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    {{{year here}}}
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    Coal
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {{{coal_count here}}}
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
