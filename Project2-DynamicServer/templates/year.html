@@ -21,13 +21,12 @@
     <!-- make an HTML table here that we populate with data -->
     <table>
         <thead>
-            
+            <tr>
+                {{{year here}}}
+            </tr>
             <tr>
                 <th>
-                    Year
-                </th>
-                <th>
-                    State Abreviation
+                    State
                 </th>
                 <th>
                     Coal
@@ -44,13 +43,13 @@
                 <th>
                     Renewable
                 </th>
+                <th>
+                    Total
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>
-                    {{{year here}}}
-                </td>
                 <td>
                     {{{State here}}}
                 </td>
@@ -68,6 +67,9 @@
                 </td>
                 <td>
                     {{{renewable_count here}}}
+                </td>
+                <td>
+                    {{{total here}}}
                 </td>
             </tr>
             
