@@ -70,12 +70,30 @@ app.get('/state/:selected_state', (req, res) => {
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
     console.log(req.params.selected_energy_source);
-    fs.readFile(path.join(template_dir, 'energy.html'), (err, template) => {
-        // modify `template` and send response
-        // this will require a query to the SQL database
-
-        res.status(200).type('html').send(template); // <-- you may need to change this
-    });
+    fs.readFile(path.join(__dirname, 'templates/energy.html'), 'utf-8', (err, data) => {
+        if (err)
+        {
+            res.status(404).send('Error: file not found');
+        }
+        else {
+            console.log("Connecting to database...");
+            //console.log("Start of data:\n" + data + "\nEnd of Data");
+            let response = data.replace(/{{{ENERGY_TYPE}}}/g, req.params.selected_energy_source);
+            //response = data.replace('test1', req.params.selected_energy_source);
+            //response = data.replace('test2', req.params.selected_energy_source);
+            //console.log(req.params.selected_energy_source[0]);
+            db.all('SELECT year from Consumption', (err, rows) => {
+                console.log(rows);
+                let i;
+                let list_items = '';
+                for (i = 0; i < rows.length; i++) {
+                    list_items += '<li>' + rows[i].state_abbreviation + '</li>\n';
+                }
+                //response = response.replace('test2', list_items);
+            });
+            res.status(200).type('html').send(response);
+        }
+    })
 });
 
 app.listen(port, () => {
