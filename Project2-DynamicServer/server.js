@@ -115,12 +115,23 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             //console.log(req.params.selected_energy_source[0]);
             db.all('SELECT year from Consumption', (err, rows) => {
                 console.log(rows);
+               /*
                 let i;
-                let list_items = '';
-                for (i = 0; i < rows.length; i++) {
-                    list_items += '<li>' + rows[i].state_abbreviation + '</li>\n';
+                let j;
+                let col_items = '';
+                let row_itmes = '';
+                for (i = 0; i < cols.length; i++) {
+                    col_items += '<tr>' + cols[i].state_abbreviation + '</tr>\n';
+                  
                 }
-                //response = response.replace('test2', list_items);
+                
+                //response = response.replace('test2', col_items);
+                for (i = 0; i < rows.length; i++) {
+                    row_items += '<tr>' + rows[i].year + '</tr>\n';
+                  
+                }
+                //response = response.replace('test2', row_items);
+               */
             });
             res.status(200).type('html').send(response);
         }
