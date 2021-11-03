@@ -19,7 +19,7 @@
     "main": "server.js",
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/Logan-Shafer/dynamicserver.github.io/tree/main/Project2-DynamicServer"
     },
     "dependencies": {
         "express": "^4.17.1",
