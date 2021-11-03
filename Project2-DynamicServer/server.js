@@ -77,6 +77,21 @@ app.get('/state/:selected_state', (req, res) => {
         }
         else
         {
+            let response = data.replace('{{{state here}}}', req.params.selected_state);
+            db.all('SELECT year FROM usenergy ', [req.params.year[0]], (err, rows) => {
+                // do we need a loop to replace all data in the table?
+                /*
+                    let i;
+                    let data_items = '';
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        data_items += '<tr>' + rows[i].year + '</tr>\n';
+                    }
+                
+                */
+                response = response.replace('{{{data here}}}', data_items);
+                res.status(200).type('html').send(response);
+            });
         }
 
         res.status(200).type('html').send(template); // <-- you may need to change this
