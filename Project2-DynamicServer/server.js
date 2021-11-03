@@ -39,14 +39,16 @@ app.get('/year/:selected_year', (req, res) => {
     fs.readFile(path.join(template_dir, 'year.html'), (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
+        //year,coal, natural gas, nuclear, petrol, renewable, total
         if(err)
         {
             res.status(404).send('Error: file not found');
         }
         else
         {
-            let response = data.replace('{{{year here}}}', req.params.selected_year);
-            db.all('SELECT state FROM usenergy ', [req.params.state[0]], (err, rows) => {
+            
+            db.all('SELECT state FROM usenergy ', [req.params.selected_year], (err, rows) => {
+                console.log(rows);
                 // do we need a loop to replace all data in the table?
                 /*
                     let i;
@@ -57,6 +59,7 @@ app.get('/year/:selected_year', (req, res) => {
                     }
                 
                 */
+                let response = rows.replace('{{{year here}}}', req.params.selected_year);
                 response = response.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
@@ -79,6 +82,8 @@ app.get('/state/:selected_state', (req, res) => {
         {
             let response = data.replace('{{{state here}}}', req.params.selected_state);
             db.all('SELECT year FROM usenergy ', [req.params.year[0]], (err, rows) => {
+                //year,coal, natural gas, nuclear, petrol, renewable, total
+                
                 // do we need a loop to replace all data in the table?
                 /*
                     let i;
