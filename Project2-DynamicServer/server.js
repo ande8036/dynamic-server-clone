@@ -5,6 +5,7 @@ let path = require('path');
 // NPM modules
 let express = require('express');
 let sqlite3 = require('sqlite3');
+const { response } = require('express');
 
 
 let public_dir = path.join(__dirname, 'public');
@@ -47,20 +48,21 @@ app.get('/year/:selected_year', (req, res) => {
         else
         {
             
-            db.all('SELECT state FROM usenergy ', [req.params.selected_year], (err, rows) => {
-                console.log(rows);
+            db.all('SELECT year, state_abbreviation, coal, natural_gas, petroleum, renewable FROM Consumption  WHERE year = ?', [req.params.selected_year], (err, rows) => {
+                
                 // do we need a loop to replace all data in the table?
-                /*
+                
                     let i;
                     let data_items = '';
                     for(i = 0; i < rows.length; i++)
                     {
-                        data_items += '<tr>' + rows[i].state + '</tr>\n';
+                        data_items += '<tr>' + rows[i].selected_state + '</tr>\n';
                     }
                 
-                */
-                let response = rows.replace('{{{year here}}}', req.params.selected_year);
-                response = response.replace('{{{data here}}}', data_items);
+                    //console.log(rows);
+                
+                //let response = rows.replace('{{{year here}}}', req.params.selected_year);
+                let response = rows.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
         }
@@ -80,21 +82,22 @@ app.get('/state/:selected_state', (req, res) => {
         }
         else
         {
-            let response = data.replace('{{{state here}}}', req.params.selected_state);
-            db.all('SELECT year FROM usenergy ', [req.params.year[0]], (err, rows) => {
-                //year,coal, natural gas, nuclear, petrol, renewable, total
+            
+            db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petrol, renewable,  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+                //state,coal, natural gas, nuclear, petrol, renewable, total
                 
                 // do we need a loop to replace all data in the table?
-                /*
+                
                     let i;
                     let data_items = '';
                     for(i = 0; i < rows.length; i++)
                     {
-                        data_items += '<tr>' + rows[i].year + '</tr>\n';
+                        data_items += '<tr>' + rows[i].selected_year + '</tr>\n';
                     }
+                    console.log(rows);
                 
-                */
-                response = response.replace('{{{data here}}}', data_items);
+                //let response = rows.replace('{{{state here}}}', req.params.selected_state);
+                let response = rows.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
         }
