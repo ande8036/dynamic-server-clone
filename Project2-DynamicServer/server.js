@@ -57,7 +57,9 @@ app.get('/year/:selected_year', (req, res) => {
 
                     for(i = 0; i < rows.length; i++)
                     {
-                        data_items += '<tr>\n' + '<td>' + rows[i].state_abbreviation + '</td>\n' + rows[i].coal + '</td>\n'+ '</td>\n' + rows[i].natural_gas + '</td>\n' + rows[i].petroleum + '</td>\n' + rows[i].renewable + '</td>\n' + '</td>\n' + total + '</td>\n' +'</tr>\n';
+                        total += rows[i].coal + rows[i].natural_gas + rows[i].petroleum + rows[i].renewable;
+                        data_items += '<tr>\n' + '<td>' + rows[i].state_abbreviation + '</td>\n' + '<td>' + rows[i].coal + '</td>\n'+ '<td>' + rows[i].natural_gas + '</td>\n'+ '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' +  '<td>' + total + '</td>\n' +'</tr>\n';
+                        total = 0;
                     }
                 
                     console.log(rows);
@@ -82,7 +84,7 @@ app.get('/state/:selected_state', (req, res) => {
         else
         {
             let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
-            db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable,  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+            db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
                 
                 // do we need a loop to replace all data in the table?
@@ -92,11 +94,13 @@ app.get('/state/:selected_state', (req, res) => {
                     let total = 0;
                     for(i = 0; i < rows.length; i++)
                     {
+                        total += rows[i].coal + rows[i].natural_gas + rows[i].petroleum + rows[i].renewable;
                         data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
+                        total = 0;
                     }
                     console.log(rows);
                 
-                response = rows.replace('{{{data here}}}', data_items);
+                response = response.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
         }
