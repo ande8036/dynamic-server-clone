@@ -47,26 +47,25 @@ app.get('/year/:selected_year', (req, res) => {
         }
         else
         {
+            let response = template.toString().replace('{{{year here}}}', req.params.selected_year);
             
-            db.all('SELECT year, state_abbreviation, coal, natural_gas, petroleum, renewable FROM Consumption  WHERE year = ?', [req.params.selected_year], (err, rows) => {
-                
-                // do we need a loop to replace all data in the table?
+            db.all('SELECT state_abbreviation, coal, natural_gas, petroleum, renewable FROM Consumption  WHERE year = ?', [req.params.selected_year], (err, rows) => {  
                 
                     let i;
                     let data_items = '';
+                    let total = 0;
+
                     for(i = 0; i < rows.length; i++)
                     {
-                        data_items += '<tr>' + rows[i].selected_state + '</tr>\n';
+                        data_items += '<tr>\n' + '<td>' + rows[i].state_abbreviation + '</td>\n' + rows[i].coal + '</td>\n'+ '</td>\n' + rows[i].natural_gas + '</td>\n' + rows[i].petroleum + '</td>\n' + rows[i].renewable + '</td>\n' + '</td>\n' + total + '</td>\n' +'</tr>\n';
                     }
                 
-                    //console.log(rows);
+                    console.log(rows);
                 
-                //let response = rows.replace('{{{year here}}}', req.params.selected_year);
-                let response = rows.replace('{{{data here}}}', data_items);
+                response = response.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
-            });
-        }
-        res.status(200).type('html').send(template); // <-- you may need to change this
+            });       
+        }    
     });
 });
 
@@ -82,27 +81,26 @@ app.get('/state/:selected_state', (req, res) => {
         }
         else
         {
-            
-            db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petrol, renewable,  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+            let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
+            db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable,  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
                 
                 // do we need a loop to replace all data in the table?
                 
                     let i;
                     let data_items = '';
+                    let total = 0;
                     for(i = 0; i < rows.length; i++)
                     {
-                        data_items += '<tr>' + rows[i].selected_year + '</tr>\n';
+                        data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
                     }
                     console.log(rows);
                 
-                //let response = rows.replace('{{{state here}}}', req.params.selected_state);
-                let response = rows.replace('{{{data here}}}', data_items);
+                response = rows.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
         }
 
-        res.status(200).type('html').send(template); // <-- you may need to change this
     });
 });
 
