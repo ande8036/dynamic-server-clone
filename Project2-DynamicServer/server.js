@@ -48,6 +48,7 @@ app.get('/year/:selected_year', (req, res) => {
         else
         {
             let response = template.toString().replace('{{{year here}}}', req.params.selected_year);
+            response = response.replace('{{{year}}}', req.params.selected_year);
             
             db.all('SELECT state_abbreviation, coal, natural_gas, petroleum, renewable FROM Consumption  WHERE year = ?', [req.params.selected_year], (err, rows) => {  
                 
@@ -61,7 +62,44 @@ app.get('/year/:selected_year', (req, res) => {
                         data_items += '<tr>\n' + '<td>' + rows[i].state_abbreviation + '</td>\n' + '<td>' + rows[i].coal + '</td>\n'+ '<td>' + rows[i].natural_gas + '</td>\n'+ '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' +  '<td>' + total + '</td>\n' +'</tr>\n';
                         total = 0;
                     }
-                
+                    /*
+                    // put this inside the for loop to calculate totals for 
+                    // dynamically generate totals for the graphs
+                    let coal_total = 0;
+                    for(i = 0; rows.length; i++)
+                    {
+                        coal_total += rows[i].coal;
+                    }
+                    response = response.replace('{{{COAL_COUNT}}}', coal_total);
+
+                    let natural_gas_total = 0;
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        natural_gas_total += rows[i].natural_gas;
+                    }
+                    response = response.replace('{{{NATURAL_GAS_COUNT}}}', natural_gas_total);
+
+                    let nuclear_total = 0;
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        nuclear_total += rows[i].nuclear;
+                    }
+                    response = response.replace('{{{NUCLEAR_COUNT}}}', nuclear_total);
+
+                    let petroleum_total = 0;
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        petroleum_total += rows[i].petroleum;
+                    }
+                    response = response.replace('{{{PETROLEUM_COUNT}}}', petroleum_total);
+
+                    let renewable_total = 0;
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        renewable_total += rows[i].renewable;
+                    }
+                    response = response.replace('{{{RENEWABLE_COUNT}}}', renewable_total);
+                    */
                     console.log(rows);
                 
                 response = response.replace('{{{data here}}}', data_items);
@@ -98,6 +136,7 @@ app.get('/state/:selected_state', (req, res) => {
                         data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
                         total = 0;
                     }
+                    // coal total do a for loop that goes through rows and adds coal 
                     console.log(rows);
                 
                 response = response.replace('{{{data here}}}', data_items);
@@ -111,37 +150,35 @@ app.get('/state/:selected_state', (req, res) => {
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
     console.log(req.params.selected_energy_source);
-    fs.readFile(path.join(__dirname, 'templates/energy.html'), 'utf-8', (err, data) => {
+    fs.readFile(path.join(__dirname, 'templates/energy.html'), 'utf-8', (err, template) => {
         if (err)
         {
             res.status(404).send('Error: file not found');
         }
         else {
             console.log("Connecting to database...");
-            //console.log("Start of data:\n" + data + "\nEnd of Data");
-            let response = data.replace(/{{{ENERGY_TYPE}}}/g, req.params.selected_energy_source);
-            //response = data.replace('test1', req.params.selected_energy_source);
-            //response = data.replace('test2', req.params.selected_energy_source);
-            //console.log(req.params.selected_energy_source[0]);
-            db.all('SELECT year from Consumption', (err, rows) => {
-                console.log(rows);
-               /*
+            
+            let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
+            db.all('SELECT state_abbreviation from Consumption ',  (err, cols) => {
+                db.all('SELECT year from Consumption WHERE energy_source = ?', [req.params.selected_energy_source], (err, rows) => {
+
+                    let i;
+                    let data_items = '';
+                    
+                    for(i = 0; i < rows.length; i++)
+                    {
+                        
+                        data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '</tr>\n';
+                    }
+                });
+
                 let i;
-                let j;
                 let col_items = '';
-                let row_itmes = '';
-                for (i = 0; i < cols.length; i++) {
-                    col_items += '<tr>' + cols[i].state_abbreviation + '</tr>\n';
-                  
+                for(i = 0; i < cols.length; i++)
+                {
+                    col_items += '<tr>\n' + '<td>' + cols[i].state_abbreviation + '</td>\n' + '</tr>\n';
                 }
-                
-                //response = response.replace('state abbreviations here', col_items);
-                for (i = 0; i < rows.length; i++) {
-                    row_items += '<tr>' + rows[i].year + '</tr>\n';
-                  
-                }
-                //response = response.replace('data here', row_items);
-               */
+               
             });
             res.status(200).type('html').send(response);
         }
