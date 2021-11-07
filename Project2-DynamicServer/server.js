@@ -154,16 +154,8 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             console.log("Connecting to database...");
             
             let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
-            db.all('SELECT state_abbreviation FROM Consumption',  (err, cols) => {
-                db.all('SELECT year FROM Consumption', (err, rows) => {
-                    let i ;
-                    let row_items = '';
-                    for(i = 0; i < rows.length; i++)
-                    {
-                        row_items += '<tr>\n' + '<td>' + cols[i].year + '</td>\n' + '</tr>\n';
-                    }
-                    response = response.replace('{{{data here}}}', row_items);
-                });
+            db.all('SELECT state_abbreviation FROM Consumption WHERE year == 1960',  (err, cols) => {
+                
 
                 let i;
                 let col_items = '';
@@ -171,7 +163,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 {
                     col_items += '<tr>\n' + '<td>' + cols[i].state_abbreviation + '</td>\n' + '</tr>\n';
                 }
-                
+                console.log(cols);
                 response = response.replace('{{{state abreviations here}}}', col_items);
                 res.status(200).type('html').send(response)
             });
