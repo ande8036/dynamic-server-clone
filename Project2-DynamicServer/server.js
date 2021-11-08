@@ -107,7 +107,15 @@ app.get('/state/:selected_state', (req, res) => {
         {
             let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
             response = response.replace('{{{state image here}}}', '../images/'+ req.params.selected_state +'.jpg');
-            response = response.replace('{{{STATE}}}', req.params.selected_state);
+            if(req.params.selected_state.length == 2) {
+                response = response.replace('{{{state image here}}}', '/images/'+ req.params.selected_state +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
+            } else {
+                db.all('SELECT state_abbreviation FROM States WHERE state_name = ?', [req.params.selected_state], (err, state) => {
+                    console.log(state[0].state_abbreviation);
+                    response = response.replace('{{{state image here}}}', '/images/'+ state[0].state_abbreviation +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
+
+                });
+            }
             db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption INNER JOIN States ON Consumption.state_abbreviation = States.state_abbreviation WHERE Consumption.state_abbreviation = ? OR state_name = ?', [req.params.selected_state, req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
                 // make a coppy of every image with full name
