@@ -13,7 +13,7 @@
     </script>
 </head>
 <body>
-
+    <!-- We need a line chart for this table -->
     <label for="viewBy" id="viewLabel">Choose whether to view by year, state, or energy source</label>
 
     <select name="viewBy" id="viewBy">
@@ -107,7 +107,39 @@
     <button id="swapAbbreviation" type="button">Swap to Full Names</button>
 
 
+    <button id="prev" type="button">previous</button>
+    <button id="next" type="button">next</button>
+
     <script type="text/javascript">
+
+        document.getElementById("next").onclick = function () {
+            if(document.getElementById("header").innerText == "Coal") {
+                location.href = "http://localhost:8000/energy/natural_gas";
+            } else if(document.getElementById("header").innerText == "Natural gas"){
+                location.href = "http://localhost:8000/energy/nuclear";
+            } else if(document.getElementById("header").innerText == "Nuclear"){
+                location.href = "http://localhost:8000/energy/petroleum";
+            } else if(document.getElementById("header").innerText == "Petroleum"){
+                location.href = "http://localhost:8000/energy/renewable";
+            } else if(document.getElementById("header").innerText == "Renewable"){
+                location.href = "http://localhost:8000/energy/coal";
+            }
+            
+        }
+        document.getElementById("prev").onclick = function () {
+            if(document.getElementById("header").innerText == "Coal") {
+                location.href = "http://localhost:8000/energy/renewable";
+            } else if(document.getElementById("header").innerText == "Natural gas"){
+                location.href = "http://localhost:8000/energy/coal";
+            } else if(document.getElementById("header").innerText == "Nuclear"){
+                location.href = "http://localhost:8000/energy/natural_gas";
+            } else if(document.getElementById("header").innerText == "Petroleum"){
+                location.href = "http://localhost:8000/energy/renewable";
+            } else if(document.getElementById("header").innerText == "Renewable"){
+                location.href = "http://localhost:8000/energy/petroleum";
+            }
+    
+        }
 
         document.getElementById("swapName").onclick = function () {
             document.getElementById("tableData").innerHTML = document.getElementById("tableData").innerHTML.replace(/Alaska/g, 'AK');
@@ -255,7 +287,7 @@
     </script>
 
     <!-- energy type here -->
-    {{{energy here}}}
+    <h1 id="header">{{{energy here}}}</h1>
     
      <!-- image of energy type here -->
     
