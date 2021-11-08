@@ -15,9 +15,10 @@
         var petroleum_count = {{{PETROLEUM_COUNT}}};
         var renewable_count = {{{RENEWABLE_COUNT}}};
     </script>
+    
 </head>
 <body>
-
+    <!-- bar chart, pie chart -->
     <label for="viewBy" id="viewLabel">Choose whether to view by year, state, or energy source</label>
 
     <select name="viewBy" id="viewBy">
@@ -110,7 +111,28 @@
     <button id="swapName" type="button">Swap to Abbreviations</button>
     <button id="swapAbbreviation" type="button">Swap to Full Names</button>
 
+    <button id="prev" type="button">previous</button>
+    <button id="next" type="button">next</button>
+
     <script type="text/javascript">
+
+        document.getElementById("next").onclick = function () {
+            if(parseInt(document.getElementById("header").innerText) == 2018) {
+                location.href = "http://localhost:8000/year/1960";
+            } else {
+                location.href = "http://localhost:8000/year/" + (parseInt(document.getElementById("header").innerText) + 1);
+            }
+            
+        }
+        document.getElementById("prev").onclick = function () {
+            if(parseInt(document.getElementById("header").innerText) == 1960) {
+                location.href = "http://localhost:8000/year/2018";
+            } else {
+                location.href = "http://localhost:8000/year/" + (parseInt(document.getElementById("header").innerText) - 1);
+            }
+    
+        }
+
 
         document.getElementById("swapName").onclick = function () {
             document.getElementById("tableData").innerHTML = document.getElementById("tableData").innerHTML.replace(/Alaska/g, 'AK');
@@ -259,7 +281,7 @@
 
 
     <!-- create template here -->
-    <h1>{{{year here}}}</h1>
+    <h1 id="header">{{{year here}}}</h1>
     <!-- make an HTML table here that we populate with data -->
     <table id="tableData">
             <tr>
