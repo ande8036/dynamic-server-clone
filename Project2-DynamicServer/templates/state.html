@@ -17,7 +17,7 @@
     </script>
 </head>
 <body >
-
+    <!-- percent stacked area chart -->
     <label for="viewBy" id="viewLabel">Choose whether to view by year, state, or energy source</label>
 
     <select name="viewBy" id="viewBy">
@@ -111,7 +111,40 @@
     <button id="swapName" type="button">Swap to Abbreviations</button>
     <button id="swapAbbreviation" type="button">Swap to Full Names</button>
 
+    <button id="prev" type="button">previous</button>
+    <button id="next" type="button">next</button>
+
     <script type="text/javascript">
+
+        document.getElementById("next").onclick = function () {
+
+	    let i;
+	    var currentState = window.location.href.split("/")[4];
+	    for(i = 0; i < document.getElementById("chooseState").options.length; i++) {
+		if(document.getElementById("chooseState").options[i].value == currentState) {
+		    if(currentState == "WY") {
+			location.href = "http://localhost:8000/state/AK";
+		    } else {
+		    	location.href = "http://localhost:8000/state/" + document.getElementById("chooseState").options[i+1].value
+		    }
+		}
+	    }
+            
+        }
+        document.getElementById("prev").onclick = function () {
+            let i;
+	    var currentState = window.location.href.split("/")[4];
+	    for(i = 0; i < document.getElementById("chooseState").options.length; i++) {
+		if(document.getElementById("chooseState").options[i].value == currentState) {
+		    if(currentState == "AK") {
+			location.href = "http://localhost:8000/state/WY";
+		    } else {
+		    	location.href = "http://localhost:8000/state/" + document.getElementById("chooseState").options[i-1].value
+		    }
+		}
+	    }
+    
+        }
 
         document.getElementById("swapName").onclick = function () {
             document.getElementById("stateName").innerHTML = document.getElementById("stateName").innerHTML.replace(/Alaska/g, 'AK');
