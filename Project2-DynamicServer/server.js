@@ -52,6 +52,12 @@ app.get('/year/:selected_year', (req, res) => {
             
             db.all('SELECT state_abbreviation, coal, natural_gas, nuclear, petroleum, renewable FROM Consumption  WHERE year = ?', [req.params.selected_year], (err, rows) => {  
                 
+                if(rows.length == 0)
+                {
+                    res.status(404).send('Error: no data for year ' + req.params.selected_year);
+                    return 0;
+                }
+
                     let i;
                     let data_items = '';
                     let total = 0;
@@ -104,7 +110,11 @@ app.get('/state/:selected_state', (req, res) => {
             response = response.replace('{{{STATE}}}', req.params.selected_state);
             db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
-                
+                if(rows.length == 0)
+                {
+                    res.status(404).send('Error: no data for ' + req.params.selected_state);
+                    return 0;
+                }
                 // do we need a loop to replace all data in the table?
                 
                     let i;
@@ -156,7 +166,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
             db.all('SELECT state_abbreviation FROM Consumption WHERE year == 1960',  (err, cols) => {
                 
-
                 let i;
                 let col_items = '';
                 for(i = 0; i < cols.length; i++)
