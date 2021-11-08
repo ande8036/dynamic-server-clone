@@ -106,10 +106,11 @@ app.get('/state/:selected_state', (req, res) => {
         else
         {
             let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
-            response = response.replace('{{{state image here}}}', 'images/'+ req.params.selected_state +'.jpg');
+            response = response.replace('{{{state image here}}}', '../images/'+ req.params.selected_state +'.jpg');
             response = response.replace('{{{STATE}}}', req.params.selected_state);
-            db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption  WHERE state_abbreviation = ?', [req.params.selected_state], (err, rows) => {
+            db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption INNER JOIN States ON Consumption.state_abbreviation = States.state_abbreviation WHERE Consumption.state_abbreviation = ? OR state_name = ?', [req.params.selected_state, req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
+                // make a coppy of every image with full name
                 if(rows.length == 0)
                 {
                     res.status(404).send('Error: no data for ' + req.params.selected_state);
@@ -164,17 +165,24 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             console.log("Connecting to database...");
             
             let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
-            db.all('SELECT state_abbreviation FROM Consumption WHERE year == 1960',  (err, cols) => {
+            db.all('SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + 'FROM Consumption', [], (err, cols) => {
+                // do an inner join
                 
                 let i;
+                
                 let col_items = '';
+                
                 for(i = 0; i < cols.length; i++)
                 {
-                    col_items += '<tr>\n' + '<td>' + cols[i].state_abbreviation + '</td>\n' + '</tr>\n';
+                    col_items += '<tr>\n' + '<td>' + cols[i].year + '</td>' + '<td>' + cols[i].state_abbreviation + '</td>\n' + '<td>' + cols[i].selected_energy_source + '</td>' + '</tr>\n';
                 }
                 console.log(cols);
+                
+                
                 response = response.replace('{{{state abreviations here}}}', col_items);
+                //response = response.replace('{{{data here}}}', row_items);
                 res.status(200).type('html').send(response)
+
             });
             
         }
