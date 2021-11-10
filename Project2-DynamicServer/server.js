@@ -210,7 +210,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         row_items +=  '<tr>\n' +'<td>' + rows[i].year + '</td>\n';
                         for(j = 0; j <= 51; j++)
                         {
-                            //dict[state_abbreviation].append(req.params.selected_energy_source);
+                            dict[j] = req.params.selected_energy_source;
                             row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n'
                         }
                         row_items +=    '</tr>\n';
