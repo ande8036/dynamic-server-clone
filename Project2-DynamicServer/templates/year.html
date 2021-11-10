@@ -14,6 +14,7 @@
         var nuclear_count = {{{NUCLEAR_COUNT}}};
         var petroleum_count = {{{PETROLEUM_COUNT}}};
         var renewable_count = {{{RENEWABLE_COUNT}}};
+        var total_count = {{{TOTAL TOTAL}}};
     </script>
     
 </head>
@@ -114,7 +115,45 @@
     <button id="prev" type="button">previous</button>
     <button id="next" type="button">next</button>
 
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
     <script type="text/javascript">
+
+    window.onload = function () {
+        
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            
+            title:{
+                text:"Energy Consumption for US in " + year
+            },
+            axisX:{
+                interval: 1
+            },
+            axisY2:{
+                interlacedColor: "rgba(1,77,101,.2)",
+                gridColor: "rgba(1,77,101,.1)",
+                title: "Amount Consumed"
+            },
+            data: [{
+                type: "bar",
+                name: "energy sources",
+                axisYType: "secondary",
+                color: "#014D65",
+                dataPoints: [
+                    { y: coal_count, label: "Coal" },
+                    { y: natural_gas_count, label: "Natural Gas" },
+                    { y: nuclear_count, label: "Nuclear" },
+                    { y: petroleum_count, label: "Petroleum" },
+                    { y: renewable_count, label: "Renewable" },
+                    { y: total_count, label: "Total" }
+                ]
+            }]
+        });
+        chart.render();
+    
+    }
 
         document.getElementById("next").onclick = function () {
             if(parseInt(document.getElementById("header").innerText) == 2018) {
@@ -248,7 +287,7 @@
             document.getElementById("viewBy").style.visibility = "hidden";
             document.getElementById("submit").style.visibility = "hidden";
             var selected = document.getElementById("viewBy");
-            console.log(selected.options[selected.selectedIndex].text);
+            //console.log(selected.options[selected.selectedIndex].text);
             if(selected.options[selected.selectedIndex].text == "Year") {
                 document.getElementById("yearLabel").style.visibility = "visible";
                 document.getElementById("chooseYear").style.visibility = "visible";
