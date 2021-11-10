@@ -80,7 +80,7 @@ app.get('/year/:selected_year', (req, res) => {
                         renewable_total += rows[i].renewable;
                     }
 
-                    console.log(rows);
+                    //console.log(rows);
                 response = response.replace('{{{COAL_COUNT}}}', coal_total);
                 response = response.replace('{{{NATURAL_GAS_COUNT}}}', natural_gas_total);
                 response = response.replace('{{{NUCLEAR_COUNT}}}', nuclear_total);
@@ -130,25 +130,26 @@ app.get('/state/:selected_state', (req, res) => {
                     let i;
                     let data_items = '';
                     let total = 0;
-                    let coal_total = 0;
-                    let natural_gas_total = 0;
-                    let nuclear_total = 0;
-                    let petroleum_total = 0;
-                    let renewable_total = 0;
+                    let coal_total = [];
+                    let natural_gas_total = [];
+                    let nuclear_total = [];
+                    let petroleum_total = [];
+                    let renewable_total = [];
                     for(i = 0; i < rows.length; i++)
                     {
                         total += rows[i].coal + rows[i].natural_gas + rows[i].petroleum + rows[i].renewable;
                         data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
                         total = 0;
                         // dynamically generate totals for the graphs
-                        coal_total += rows[i].coal;
-                        natural_gas_total += rows[i].natural_gas;
-                        nuclear_total += rows[i].nuclear;
-                        petroleum_total += rows[i].petroleum;
-                        renewable_total += rows[i].renewable;
+                        coal_total[i] = rows[i].coal;
+                        natural_gas_total[i] = rows[i].natural_gas;
+                        nuclear_total[i] = rows[i].nuclear;
+                        petroleum_total[i] = rows[i].petroleum;
+                        renewable_total[i] = rows[i].renewable;
                     }
                     // coal total do a for loop that goes through rows and adds coal 
-                    console.log(rows);
+                    
+                    //console.log(rows);
                 response = response.replace('{{{COAL_COUNTS}}}', coal_total);
                 response = response.replace('{{{NATURAL_GAS_COUNTS}}}', natural_gas_total);
                 response = response.replace('{{{NUCLEAR_COUNTS}}}', nuclear_total);
@@ -196,14 +197,14 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         row_items +=  '<tr>\n' +'<td>' + rows[i].year + '</td>\n';
                         for(j = 0; j < rows.length; j++)
                         {
-                            dict[state_abbreviation].append(req.params.selected_energy_source);
+                            //dict[state_abbreviation].append(req.params.selected_energy_source);
                             row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n'
                         }
                         row_items +=    '</tr>\n';
                     }
                     
                     
-                    console.log(rows);
+                    //console.log(rows);
                 
                     
 
