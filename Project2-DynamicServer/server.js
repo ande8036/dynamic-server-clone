@@ -192,9 +192,10 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             let sqlQuery = 'SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + ' FROM Consumption';
             db.all(sqlQuery, [], (err, rows) => {
                 // do an inner join
-                if(err)
+                if(rows.length == 0)
                 {
-                    console.log(err);
+                    res.status(404).send('Error: no data for ' + req.params.selected_energy_source);
+                    return 0;
                 }
                 else
                 {
