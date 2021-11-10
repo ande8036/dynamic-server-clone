@@ -172,8 +172,21 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         }
         else {
 
+            let response;
+            let energyType;
+            if(req.params.selected_energy_source == "coal") {
+                energyType = "Coal";
+            } else if(req.params.selected_energy_source == "natural_gas") {
+                energyType = "Natural Gas";
+            } else if(req.params.selected_energy_source == "nuclear") {
+                energyType = "Nuclear";
+            } else if(req.params.selected_energy_source == "petroleum") {
+                energyType = "Petroleum";
+            } else if(req.params.selected_energy_source == "renewable") {
+                energyType = "Renewable"
+            }
             
-            let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
+            response = template.toString().replace('{{{energy here}}}', energyType);
             response = response.replace('{{{energy image here}}}', '../images/'+ req.params.selected_energy_source +'.jpg');
             response = response.replace('{{{ENERGY_TYPE}}}', req.params.selected_energy_source);
             let sqlQuery = 'SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + ' FROM Consumption';
