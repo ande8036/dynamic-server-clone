@@ -116,6 +116,7 @@ app.get('/state/:selected_state', (req, res) => {
 
                 });
             }
+            response = response.replace('{{{STATE}}}', req.params.selected_state);
             db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption INNER JOIN States ON Consumption.state_abbreviation = States.state_abbreviation WHERE Consumption.state_abbreviation = ? OR state_name = ?', [req.params.selected_state, req.params.selected_state], (err, rows) => {
                 //state,coal, natural gas, nuclear, petrol, renewable, total
                 // make a coppy of every image with full name
@@ -148,11 +149,11 @@ app.get('/state/:selected_state', (req, res) => {
                     }
                     // coal total do a for loop that goes through rows and adds coal 
                     console.log(rows);
-                response = response.replace('{{{COAL_COUNT}}}', coal_total);
-                response = response.replace('{{{NATURAL_GAS_COUNT}}}', natural_gas_total);
-                response = response.replace('{{{NUCLEAR_COUNT}}}', nuclear_total);
-                response = response.replace('{{{PETROLEUM_COUNT}}}', petroleum_total);
-                response = response.replace('{{{RENEWABLE_COUNT}}}', renewable_total); 
+                response = response.replace('{{{COAL_COUNTS}}}', coal_total);
+                response = response.replace('{{{NATURAL_GAS_COUNTS}}}', natural_gas_total);
+                response = response.replace('{{{NUCLEAR_COUNTS}}}', nuclear_total);
+                response = response.replace('{{{PETROLEUM_COUNTS}}}', petroleum_total);
+                response = response.replace('{{{RENEWABLE_COUNTS}}}', renewable_total); 
                 response = response.replace('{{{data here}}}', data_items);
                 res.status(200).type('html').send(response);
             });
@@ -163,20 +164,19 @@ app.get('/state/:selected_state', (req, res) => {
 
 // GET request handler for '/energy/*'
 app.get('/energy/:selected_energy_source', (req, res) => {
-    console.log('*' + req.params.selected_energy_source);
     fs.readFile(path.join(__dirname, 'templates/energy.html'), 'utf-8', (err, template) => {
         if (err)
         {
             res.status(404).send('Error: file not found');
         }
         else {
-            console.log("Connecting to database...");
+
             
             let response = template.toString().replace('{{{energy here}}}', req.params.selected_energy_source);
             response = response.replace('{{{energy image here}}}', '../images/'+ req.params.selected_energy_source +'.jpg');
+            response = response.replace('{{{ENERGY_TYPE}}}', req.params.selected_energy_source);
             let sqlQuery = 'SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + ' FROM Consumption';
-            console.log(sqlQuery);
-            db.all(sqlQuery, [], (err, cols) => {
+            db.all(sqlQuery, [], (err, rows) => {
                 // do an inner join
                 if(err)
                 {
@@ -186,20 +186,29 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 {
                     let i;
                     let j;
-                    let col_items = '';
                     let row_items = '';
+                    var dict = {"AK":[], "AL":[],"CO":[], "CT":[], "DC":[], "DE":[], "FL":[], "CA":[], "HI":[], "IA":[], "ID":[], "IL":[], "AR":[], "KS":[], "KY":[], "MA":[], "MD":[], "ME":[], "MI":[], "MN":[], "MO":[], "MS":[], "MT":[], "NC":[], "ND":[],
+                     "NE":[], "NH":[], "NJ":[], "NM":[], "NV":[], "NY":[], "OH":[], "OK":[], "OR":[], "PA":[], "RI":[], "SC":[], "SD":[], "TN":[], "TX":[], "UT":[], "VA":[], "VT":[], "WA":[], "WI":[], "WV":[], "WY":[] };
                     
-                    for(i = 0; i < cols.length; i++)
-                    {
-                        col_items += '<tr>\n' + '<td>' + cols[i].year + '</td>' + '<td>' + cols[i].state_abbreviation + '</td>\n' + '<td>' + cols[i][req.params.selected_energy_source] + '</td>' + '</tr>\n';
+                    
+                    for(i = 0; i < rows.length; i++)
+                    { 
+                        row_items +=  '<tr>\n' +'<td>' + rows[i].year + '</td>\n';
+                        for(j = 0; j < rows.length; j++)
+                        {
+                            dict[state_abbreviation].append(req.params.selected_energy_source);
+                            row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n'
+                        }
+                        row_items +=    '</tr>\n';
                     }
-                    console.log(cols);
-
                     
                     
+                    console.log(rows);
                 
-                    response = response.replace('{{{state abreviations here}}}', col_items);
-                    //response = response.replace('{{{data here}}}', row_items);
+                    
+
+                    response = response.replace('{{{data here}}}', row_items);
+                    response = response.replace('{{{ENERGY_COUNTS}}}', dict);
                     res.status(200).type('html').send(response);
                 }
                 
