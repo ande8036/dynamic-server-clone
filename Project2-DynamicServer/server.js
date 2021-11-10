@@ -192,10 +192,10 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                      "NE":[], "NH":[], "NJ":[], "NM":[], "NV":[], "NY":[], "OH":[], "OK":[], "OR":[], "PA":[], "RI":[], "SC":[], "SD":[], "TN":[], "TX":[], "UT":[], "VA":[], "VT":[], "WA":[], "WI":[], "WV":[], "WY":[] };
                     
                     
-                    for(i = 0; i < rows.length; i++)
+                    for(i = 0; i <= 51; i++)
                     { 
                         row_items +=  '<tr>\n' +'<td>' + rows[i].year + '</td>\n';
-                        for(j = 0; j < rows.length; j++)
+                        for(j = 0; j <= 51; j++)
                         {
                             //dict[state_abbreviation].append(req.params.selected_energy_source);
                             row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n'
