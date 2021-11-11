@@ -80,7 +80,7 @@ app.get('/year/:selected_year', (req, res) => {
                         renewable_total += rows[i].renewable;
                     }
 
-                    //console.log(rows);
+                    console.log(rows);
                 response = response.replace('{{{COAL_COUNT}}}', coal_total);
                 response = response.replace('{{{NATURAL_GAS_COUNT}}}', natural_gas_total);
                 response = response.replace('{{{NUCLEAR_COUNT}}}', nuclear_total);
@@ -106,6 +106,7 @@ app.get('/state/:selected_state', (req, res) => {
         else
         {
             let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
+            
             if(req.params.selected_state.length == 2) {
                 response = response.replace('{{{state image here}}}', '/images/'+ req.params.selected_state +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
             } else {
@@ -126,61 +127,59 @@ app.get('/state/:selected_state', (req, res) => {
                 }
                 // do we need a loop to replace all data in the table?
                 
-                    let i;
-                    let j;
-                    let data_items = '';
-                    let total = 0;
-                    let coal_total = [];
-                    let natural_gas_total = [];
-                    let nuclear_total = [];
-                    let petroleum_total = [];
-                    let renewable_total = [];
-                    for(i = 0; i < rows.length; i++)
-                    {
-                        total += rows[i].coal + rows[i].natural_gas + rows[i].petroleum + rows[i].renewable;
-                        data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
-                        total = 0;
-                        // dynamically generate totals for the graphs
-                        coal_total[i] = rows[i].coal;
-                        natural_gas_total[i] = rows[i].natural_gas;
-                        nuclear_total[i] = rows[i].nuclear;
-                        petroleum_total[i] = rows[i].petroleum;
-                        renewable_total[i] = rows[i].renewable;
-                    }
-                    // coal total do a for loop that goes through rows and adds coal 
-                    
-                    //console.log(rows);
-                response = response.replace('{{{COAL_COUNTS}}}', coal_total);
-                response = response.replace('{{{NATURAL_GAS_COUNTS}}}', natural_gas_total);
-                response = response.replace('{{{NUCLEAR_COUNTS}}}', nuclear_total);
-                response = response.replace('{{{PETROLEUM_COUNTS}}}', petroleum_total);
-                response = response.replace('{{{RENEWABLE_COUNTS}}}', renewable_total); 
-                response = response.replace('{{{data here}}}', data_items);
-                
-                let coal_string = '';
-                let nat_gas_string = '';
-                let nuclear_string = '';
-                let petroleum_string = '';
-                let renewable_string = '';
-                for (j = 0; j < 58; j++){
-                    coal_string += "{  y: "+coal_total[j]+ ", label: \""+(1960+j)+"\" },\n";
-                    nat_gas_string += "{  y: "+natural_gas_total[j]+ ", label: \""+(1960+j)+"\" },\n";
-                    nuclear_string += "{  y: "+nuclear_total[j]+ ", label: \""+(1960+j)+"\" },\n";
-                    petroleum_string += "{  y: "+petroleum_total[j]+ ", label: \""+(1960+j)+"\" },\n";
-                    renewable_string += "{  y: "+renewable_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                let i;
+                let j;
+                let data_items = '';
+                let total = 0;
+                let coal_total = [];
+                let natural_gas_total = [];
+                let nuclear_total = [];
+                let petroleum_total = [];
+                let renewable_total = [];
+                for(i = 0; i < rows.length; i++)
+                {
+                    total += rows[i].coal + rows[i].natural_gas + rows[i].petroleum + rows[i].renewable;
+                    data_items += '<tr>\n' + '<td>' + rows[i].year + '</td>\n' + '<td>' + rows[i].coal + '</td>\n' + '<td>' + rows[i].natural_gas + '</td>\n' + '<td>' + rows[i].nuclear + '</td>\n' + '<td>' + rows[i].petroleum + '</td>\n' + '<td>' + rows[i].renewable + '</td>\n' + '<td>' + total + '</td>\n' + '</tr>\n';
+                    total = 0;
+                    // dynamically generate totals for the graphs
+                    coal_total[i] = rows[i].coal;
+                    natural_gas_total[i] = rows[i].natural_gas;
+                    nuclear_total[i] = rows[i].nuclear;
+                    petroleum_total[i] = rows[i].petroleum;
+                    renewable_total[i] = rows[i].renewable;
                 }
-                coal_string += "{  y: "+coal_total[58]+", label: \""+(1960+58)+"\" }";
-                nat_gas_string += "{  y: "+natural_gas_total[58]+", label: \""+(1960+58)+"\" }";
-                nuclear_string += "{  y: "+nuclear_total[58]+", label: \""+(1960+58)+"\" }";
-                petroleum_string += "{  y: "+petroleum_total[58]+", label: \""+(1960+58)+"\" }";
-                renewable_string += "{  y: "+renewable_total[58]+", label: \""+(1960+58)+"\" }";
-                response = response.replace('{{{COAL_GRAPH_DATA}}}', coal_string);
-                response = response.replace('{{{NATURAL_GAS_GRAPH_DATA}}}', nat_gas_string);
-                response = response.replace('{{{NUCLEAR_GRAPH_DATA}}}', nuclear_string);
-                response = response.replace('{{{PETROLEUM_GRAPH_DATA}}}', petroleum_string);
-                response = response.replace('{{{RENEWABLE_GRAPH_DATA}}}', renewable_string);
-
-
+                // coal total do a for loop that goes through rows and adds coal 
+                
+                //console.log(rows);
+            response = response.replace('{{{COAL_COUNTS}}}', coal_total);
+            response = response.replace('{{{NATURAL_GAS_COUNTS}}}', natural_gas_total);
+            response = response.replace('{{{NUCLEAR_COUNTS}}}', nuclear_total);
+            response = response.replace('{{{PETROLEUM_COUNTS}}}', petroleum_total);
+            response = response.replace('{{{RENEWABLE_COUNTS}}}', renewable_total); 
+            response = response.replace('{{{data here}}}', data_items);
+            
+            let coal_string = '';
+            let nat_gas_string = '';
+            let nuclear_string = '';
+            let petroleum_string = '';
+            let renewable_string = '';
+            for (j = 0; j < 58; j++){
+                coal_string += "{  y: "+coal_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                nat_gas_string += "{  y: "+natural_gas_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                nuclear_string += "{  y: "+nuclear_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                petroleum_string += "{  y: "+petroleum_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                renewable_string += "{  y: "+renewable_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+            }
+            coal_string += "{  y: "+coal_total[58]+", label: \""+(1960+58)+"\" }";
+            nat_gas_string += "{  y: "+natural_gas_total[58]+", label: \""+(1960+58)+"\" }";
+            nuclear_string += "{  y: "+nuclear_total[58]+", label: \""+(1960+58)+"\" }";
+            petroleum_string += "{  y: "+petroleum_total[58]+", label: \""+(1960+58)+"\" }";
+            renewable_string += "{  y: "+renewable_total[58]+", label: \""+(1960+58)+"\" }";
+            response = response.replace('{{{COAL_GRAPH_DATA}}}', coal_string);
+            response = response.replace('{{{NATURAL_GAS_GRAPH_DATA}}}', nat_gas_string);
+            response = response.replace('{{{NUCLEAR_GRAPH_DATA}}}', nuclear_string);
+            response = response.replace('{{{PETROLEUM_GRAPH_DATA}}}', petroleum_string);
+            response = response.replace('{{{RENEWABLE_GRAPH_DATA}}}', renewable_string);
                 res.status(200).type('html').send(response);
             });
         }
@@ -196,7 +195,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             res.status(404).send('Error: file not found');
         }
         else {
-
             let response;
             let energyType;
             if(req.params.selected_energy_source == "coal") {
@@ -212,11 +210,10 @@ app.get('/energy/:selected_energy_source', (req, res) => {
             }
             
             response = template.toString().replace('{{{energy here}}}', energyType);
-            response = response.replace('{{{energy image here}}}', '../images/'+ req.params.selected_energy_source +'.jpg');
+            response = response.replace('{{{energy image here}}}', '../images/'+ req.params.selected_energy_source +'.jpg' + '" style="max-width: 10%; max-height: 10%;');
             response = response.replace('{{{ENERGY_TYPE}}}', req.params.selected_energy_source);
-            let sqlQuery = 'SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + ' FROM Consumption';
+            let sqlQuery = 'SELECT year, state_abbreviation, ' + req.params.selected_energy_source  + ' FROM Consumption ORDER by year';
             db.all(sqlQuery, [], (err, rows) => {
-                // do an inner join
                 if(rows.length == 0)
                 {
                     res.status(404).send('Error: no data for ' + req.params.selected_energy_source);
@@ -224,31 +221,47 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                 }
                 else
                 {
+                    
                     let i;
                     let j;
                     let row_items = '';
-                    var dict = {"AK":[], "AL":[],"CO":[], "CT":[], "DC":[], "DE":[], "FL":[], "CA":[], "HI":[], "IA":[], "ID":[], "IL":[], "AR":[], "KS":[], "KY":[], "MA":[], "MD":[], "ME":[], "MI":[], "MN":[], "MO":[], "MS":[], "MT":[], "NC":[], "ND":[],
-                     "NE":[], "NH":[], "NJ":[], "NM":[], "NV":[], "NY":[], "OH":[], "OK":[], "OR":[], "PA":[], "RI":[], "SC":[], "SD":[], "TN":[], "TX":[], "UT":[], "VA":[], "VT":[], "WA":[], "WI":[], "WV":[], "WY":[] };
+                    let years = 1960;
+                    let countin = 0;
+                    let countout = 0;
+                    var dict = {"AK":[], "AL":[], "AZ":[],"CO":[], "CT":[], "DC":[], "DE":[], "FL":[], "CA":[], "HI":[], "IA":[], "ID":[], "IL":[], "AR":[], "KS":[], "KY":[], "MA":[], "MD":[], "ME":[], "MI":[], "MN":[], "MO":[], "MS":[], "MT":[], "NC":[], "ND":[],
+                     "NE":[], "NH":[], "NJ":[], "NM":[], "NV":[], "NY":[], "OH":[], "OK":[], "OR":[], "PA":[], "RI":[], "SC":[], "SD":[], "TN":[], "TX":[], "UT":[], "VA":[], "VT":[], "WA":[], "WI":[], "WV":[], "WY":[], "GA":[], "IN":[], "LA":[] };
                     
                     
-                    for(i = 0; i <= 51; i++)
+                    for(i = 0; i < 59; i++)
                     { 
-                        row_items +=  '<tr>\n' +'<td>' + rows[i].year + '</td>\n';
-                        for(j = 0; j <= 51; j++)
+                        // check if we can add years manually
+                        // check dictionary
+                        row_items +=  '<tr>\n' +'<td>' + years + '</td>\n';
+                        for(j = countout; j < rows.length; j++)
                         {
-                            dict[j] = req.params.selected_energy_source;
-                            row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n'
+                            let row_state = rows[j].state_abbreviation;
+                            dict[row_state].push(rows[j][req.params.selected_energy_source]);
+                            row_items += '<td>' + rows[j][req.params.selected_energy_source] + '</td>\n';
+                            if(countin == 50 )
+                            {
+                                countin = 0;
+                                break;
+                            }
+                            countin++;
                         }
-                        row_items +=    '</tr>\n';
+                        
+                        countout += 51;
+                        row_items += '</tr>\n';
+                        years++;
                     }
                     
                     
-                    //console.log(rows);
+                    console.log(rows);
                 
                     
 
                     response = response.replace('{{{data here}}}', row_items);
-                    response = response.replace('{{{ENERGY_COUNTS}}}', dict);
+                    response = response.replace('{{{ENERGY_COUNTS}}}', JSON.stringify(dict));
                     res.status(200).type('html').send(response);
                 }
                 
