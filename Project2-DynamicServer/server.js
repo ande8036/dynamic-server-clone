@@ -128,6 +128,7 @@ app.get('/state/:selected_state', (req, res) => {
                 // do we need a loop to replace all data in the table?
                 
                     let i;
+                    let j;
                     let data_items = '';
                     let total = 0;
                     let coal_total = [];
@@ -156,6 +157,31 @@ app.get('/state/:selected_state', (req, res) => {
                 response = response.replace('{{{PETROLEUM_COUNTS}}}', petroleum_total);
                 response = response.replace('{{{RENEWABLE_COUNTS}}}', renewable_total); 
                 response = response.replace('{{{data here}}}', data_items);
+                
+                let coal_string = '';
+                let nat_gas_string = '';
+                let nuclear_string = '';
+                let petroleum_string = '';
+                let renewable_string = '';
+                for (j = 0; j < 58; j++){
+                    coal_string += "{  y: "+coal_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                    nat_gas_string += "{  y: "+natural_gas_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                    nuclear_string += "{  y: "+nuclear_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                    petroleum_string += "{  y: "+petroleum_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                    renewable_string += "{  y: "+renewable_total[j]+ ", label: \""+(1960+j)+"\" },\n";
+                }
+                coal_string += "{  y: "+coal_total[58]+", label: \""+(1960+58)+"\" }";
+                nat_gas_string += "{  y: "+natural_gas_total[58]+", label: \""+(1960+58)+"\" }";
+                nuclear_string += "{  y: "+nuclear_total[58]+", label: \""+(1960+58)+"\" }";
+                petroleum_string += "{  y: "+petroleum_total[58]+", label: \""+(1960+58)+"\" }";
+                renewable_string += "{  y: "+renewable_total[58]+", label: \""+(1960+58)+"\" }";
+                response = response.replace('{{{COAL_GRAPH_DATA}}}', coal_string);
+                response = response.replace('{{{NATURAL_GAS_GRAPH_DATA}}}', nat_gas_string);
+                response = response.replace('{{{NUCLEAR_GRAPH_DATA}}}', nuclear_string);
+                response = response.replace('{{{PETROLEUM_GRAPH_DATA}}}', petroleum_string);
+                response = response.replace('{{{RENEWABLE_GRAPH_DATA}}}', renewable_string);
+
+
                 res.status(200).type('html').send(response);
             });
         }

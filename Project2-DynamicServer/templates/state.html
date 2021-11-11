@@ -291,6 +291,74 @@
         }
     </script>
 
+<script>
+    window.onload = function () {
+    
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        title:{
+            text: "State Graph"
+        },
+        axisX:{
+            title: "Year",
+            minimum: -1,
+            maximum: 59
+        },
+        axisY:{
+            title:"Energy Type"
+        },
+        toolTip:{
+            shared: true
+        },
+        data: [{
+            type: "stackedArea100",
+            name: "Coal",
+            showInLegend: "true",
+            dataPoints: [
+                {{{COAL_GRAPH_DATA}}}
+            ]
+        },
+        {
+            type: "stackedArea100",
+            name: "Natural Gas",
+            showInLegend: "true",
+            dataPoints: [
+                {{{NATURAL_GAS_GRAPH_DATA}}}   
+            ]
+        },
+        {
+            type: "stackedArea100",
+            name: "Nuclear",
+            showInLegend: "true",
+            dataPoints: [
+                {{{NUCLEAR_GRAPH_DATA}}}
+            ]
+        },
+        {
+            type: "stackedArea100",
+            name: "Petroleum",
+            showInLegend: "true",
+            dataPoints: [
+                {{{PETROLEUM_GRAPH_DATA}}}
+            ]
+        },
+        {
+            type: "stackedArea100",
+            name: "Renewable",
+            showInLegend: "true",
+            dataPoints: [
+                {{{RENEWABLE_GRAPH_DATA}}}
+            ]
+        }]
+    });
+    chart.render();
+    }
+</script>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    
+
+
     <!-- create template here -->
     <h1 id="stateName">{{{state here}}}</h1>
     
