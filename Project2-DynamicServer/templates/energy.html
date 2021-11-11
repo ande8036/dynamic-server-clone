@@ -115,7 +115,7 @@
         document.getElementById("next").onclick = function () {
             if(document.getElementById("header").innerText == "Coal") {
                 location.href = "http://localhost:8000/energy/natural_gas";
-            } else if(document.getElementById("header").innerText == "Natural gas"){
+            } else if(document.getElementById("header").innerText == "Natural Gas"){
                 location.href = "http://localhost:8000/energy/nuclear";
             } else if(document.getElementById("header").innerText == "Nuclear"){
                 location.href = "http://localhost:8000/energy/petroleum";
@@ -129,12 +129,12 @@
         document.getElementById("prev").onclick = function () {
             if(document.getElementById("header").innerText == "Coal") {
                 location.href = "http://localhost:8000/energy/renewable";
-            } else if(document.getElementById("header").innerText == "Natural gas"){
+            } else if(document.getElementById("header").innerText == "Natural Gas"){
                 location.href = "http://localhost:8000/energy/coal";
             } else if(document.getElementById("header").innerText == "Nuclear"){
                 location.href = "http://localhost:8000/energy/natural_gas";
             } else if(document.getElementById("header").innerText == "Petroleum"){
-                location.href = "http://localhost:8000/energy/renewable";
+                location.href = "http://localhost:8000/energy/nuclear";
             } else if(document.getElementById("header").innerText == "Renewable"){
                 location.href = "http://localhost:8000/energy/petroleum";
             }
@@ -285,6 +285,28 @@
             location.href = "http://localhost:8000/energy/" + document.getElementById("chooseEnergy").value;
         }
     </script>
+    <script>
+        window.onload = function () {
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title:{
+                text: "Each State's Yearly Consumption"
+            },
+            data: [{        
+                type: "line",
+                indexLabelFontSize: 16,
+                dataPoints: [
+                    {{{ENERGY_COUNTS}}}
+                ]
+            }]
+        });
+        chart.render();
+
+        }
+    </script>
+    
 
     <!-- energy type here -->
     <h1 id="header">{{{energy here}}}</h1>
@@ -305,6 +327,15 @@
                 AL
             </th>
             <th>
+                AR
+            </th>
+            <th>
+                AZ
+            </th>
+            <th>
+                CA
+            </th>
+            <th>
                 CO
             </th>
             <th>
@@ -319,7 +350,7 @@
                 FL
             </th>
             <th>
-                CA
+                GA
             </th>
             <th>
                 HI
@@ -334,13 +365,16 @@
                 IL
             </th>
             <th>
-                AR
+                IN
             </th>
             <th>
                 KS
             </th>
             <th>
                 KY
+            </th>
+            <th>
+                LA
             </th>
             <th>
                 MA
@@ -435,6 +469,7 @@
             <th>
                 WV
             </th>
+            <th>
                 WY
             </th>
         </tr>
@@ -447,6 +482,7 @@
 
 
     
-    
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 </html>
