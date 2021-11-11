@@ -106,7 +106,6 @@ app.get('/state/:selected_state', (req, res) => {
         else
         {
             let response = template.toString().replace('{{{state here}}}', req.params.selected_state);
-            response = response.replace('{{{state image here}}}', '../images/'+ req.params.selected_state +'.jpg');
             if(req.params.selected_state.length == 2) {
                 response = response.replace('{{{state image here}}}', '/images/'+ req.params.selected_state +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
             } else {
