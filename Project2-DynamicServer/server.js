@@ -261,7 +261,29 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                     
 
                     response = response.replace('{{{data here}}}', row_items);
-                    response = response.replace('{{{ENERGY_COUNTS}}}', JSON.stringify(dict));
+
+                    let dataString = '';
+                    let k;
+                    //console.log(Object.keys(dict).length);
+                    for(k = 0; k < Object.keys(dict).length; k++) {
+                        dataString += '{\ntype: \"line\",\nindexLabelFontSize: 16,\nname: \"';
+                        dataString += Object.keys(dict)[k];
+                        dataString += '\",\ndataPoints: ['
+
+                        //data here
+                        let m;
+                        for(m = 0; m < 59; m++){
+                            dataString += '{ x: new Date(' + (1960 + m) + ', 01, 01), y: ';
+                            dataString += dict[Object.keys(dict)[k]][m] + ' },';
+                        }
+                        dataString = dataString.substring(0, dataString.length - 1);
+                        
+                        dataString += ']},\n'
+                    }
+                    dataString = dataString.substring(0, dataString.length - 1);
+                    console.log(dataString);
+
+                    response = response.replace(/{{{ENERGY_COUNTS}}}/g, dataString);
                     res.status(200).type('html').send(response);
                 }
                 
