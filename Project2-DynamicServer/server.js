@@ -273,7 +273,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         //data here
                         let m;
                         for(m = 0; m < 59; m++){
-                            dataString += '{ x: new Date(' + (1960 + m) + ', 01, 01), y: ';
+                            dataString += '{ x: new Date(' + (1960 + m) + ', 00, 01), y: ';
                             dataString += dict[Object.keys(dict)[k]][m] + ' },';
                         }
                         dataString = dataString.substring(0, dataString.length - 1);
@@ -281,7 +281,7 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         dataString += ']},\n'
                     }
                     dataString = dataString.substring(0, dataString.length - 1);
-                    console.log(dataString);
+                    //console.log(dataString);
 
                     response = response.replace(/{{{ENERGY_COUNTS}}}/g, dataString);
                     res.status(200).type('html').send(response);
