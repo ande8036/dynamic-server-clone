@@ -36,7 +36,6 @@ app.get('/', (req, res) => {
 
 // GET request handler for '/year/*'
 app.get('/year/:selected_year', (req, res) => {
-    console.log(req.params.selected_year);
     fs.readFile(path.join(template_dir, 'year.html'), (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
@@ -80,7 +79,6 @@ app.get('/year/:selected_year', (req, res) => {
                         renewable_total += rows[i].renewable;
                     }
 
-                    console.log(rows);
                 response = response.replace('{{{COAL_COUNT}}}', coal_total);
                 response = response.replace('{{{NATURAL_GAS_COUNT}}}', natural_gas_total);
                 response = response.replace('{{{NUCLEAR_COUNT}}}', nuclear_total);
@@ -95,7 +93,6 @@ app.get('/year/:selected_year', (req, res) => {
 
 // GET request handler for '/state/*'
 app.get('/state/:selected_state', (req, res) => {
-    console.log(req.params.selected_state);
     fs.readFile(path.join(template_dir, 'state.html'), (err, template) => {
         // modify `template` and send response
         // this will require a query to the SQL database
@@ -110,11 +107,19 @@ app.get('/state/:selected_state', (req, res) => {
             if(req.params.selected_state.length == 2) {
                 response = response.replace('{{{state image here}}}', '/images/'+ req.params.selected_state +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
             } else {
+                let check = 0;
                 db.all('SELECT state_abbreviation FROM States WHERE state_name = ?', [req.params.selected_state], (err, state) => {
-                    console.log(state[0].state_abbreviation);
+                    if(state.length == 0) {
+                        res.status(404).send('Error: no data for ' + req.params.selected_state);
+                        check = 1;
+                        return 0;
+                    }
                     response = response.replace('{{{state image here}}}', '/images/'+ state[0].state_abbreviation +'.jpg" alt="Image of ' + req.params.selected_state + '" style="max-width: 10%; max-height: 10%;');
 
                 });
+                if(check = 1) {
+                    return 0;
+                }
             }
             response = response.replace('{{{STATE}}}', req.params.selected_state);
             db.all('SELECT year, coal, natural_gas, nuclear, petroleum, renewable  FROM Consumption INNER JOIN States ON Consumption.state_abbreviation = States.state_abbreviation WHERE Consumption.state_abbreviation = ? OR state_name = ?', [req.params.selected_state, req.params.selected_state], (err, rows) => {
@@ -150,13 +155,12 @@ app.get('/state/:selected_state', (req, res) => {
                 }
                 // coal total do a for loop that goes through rows and adds coal 
                 
-                //console.log(rows);
             response = response.replace('{{{COAL_COUNTS}}}', coal_total);
             response = response.replace('{{{NATURAL_GAS_COUNTS}}}', natural_gas_total);
             response = response.replace('{{{NUCLEAR_COUNTS}}}', nuclear_total);
             response = response.replace('{{{PETROLEUM_COUNTS}}}', petroleum_total);
             response = response.replace('{{{RENEWABLE_COUNTS}}}', renewable_total); 
-            response = response.replace('{{{data here}}}', data_items);
+            response = response.replace(/{{{data here}}}/g, data_items);
             
             let coal_string = '';
             let nat_gas_string = '';
@@ -197,16 +201,19 @@ app.get('/energy/:selected_energy_source', (req, res) => {
         else {
             let response;
             let energyType;
-            if(req.params.selected_energy_source == "coal") {
+            if(req.params.selected_energy_source.toLowerCase() == "coal") {
                 energyType = "Coal";
-            } else if(req.params.selected_energy_source == "natural_gas") {
+            } else if(req.params.selected_energy_source.toLowerCase() == "natural_gas") {
                 energyType = "Natural Gas";
-            } else if(req.params.selected_energy_source == "nuclear") {
+            } else if(req.params.selected_energy_source.toLowerCase() == "nuclear") {
                 energyType = "Nuclear";
-            } else if(req.params.selected_energy_source == "petroleum") {
+            } else if(req.params.selected_energy_source.toLowerCase() == "petroleum") {
                 energyType = "Petroleum";
-            } else if(req.params.selected_energy_source == "renewable") {
+            } else if(req.params.selected_energy_source.toLowerCase() == "renewable") {
                 energyType = "Renewable"
+            } else {
+                res.status(404).send('Error: energy source not found');
+                return 0;
             }
             
             response = template.toString().replace('{{{energy here}}}', energyType);
@@ -255,8 +262,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         years++;
                     }
                     
-                    
-                    console.log(rows);
                 
                     
 
@@ -264,7 +269,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
 
                     let dataString = '';
                     let k;
-                    //console.log(Object.keys(dict).length);
                     for(k = 0; k < Object.keys(dict).length; k++) {
                         dataString += '{\ntype: \"line\",\nindexLabelFontSize: 16,\nname: \"';
                         dataString += Object.keys(dict)[k];
@@ -281,7 +285,6 @@ app.get('/energy/:selected_energy_source', (req, res) => {
                         dataString += ']},\n'
                     }
                     dataString = dataString.substring(0, dataString.length - 1);
-                    //console.log(dataString);
 
                     response = response.replace(/{{{ENERGY_COUNTS}}}/g, dataString);
                     res.status(200).type('html').send(response);
