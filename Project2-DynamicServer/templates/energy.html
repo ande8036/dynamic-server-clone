@@ -294,13 +294,12 @@
             title:{
                 text: "Each State's Yearly Consumption"
             },
-            data: [{        
-                type: "line",
-                indexLabelFontSize: 16,
-                dataPoints: [
-                    {{{ENERGY_COUNTS}}}
-                ]
-            }]
+            axisX: {
+                valueFormatString: "YYYY"
+            },
+            data: [
+            {{{ENERGY_COUNTS}}}
+            ]
         });
         chart.render();
 
@@ -486,3 +485,4 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 </html>
+
